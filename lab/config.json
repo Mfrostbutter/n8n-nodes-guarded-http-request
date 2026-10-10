@@ -1,0 +1,123 @@
+{
+  "version": 1,
+  "requirePolicy": true,
+  "allowInlinePolicies": true,
+  "floor": {
+    "version": 1,
+    "name": "lab-floor",
+    "description": "Lab floor: https only, no private networks, no metadata, no manual auth headers",
+    "schemes": [
+      "https"
+    ],
+    "network": {
+      "blockPrivate": true,
+      "blockLoopback": true,
+      "blockLinkLocal": true,
+      "blockMetadata": true,
+      "resolveDns": true
+    },
+    "redirects": {
+      "max": 5,
+      "forwardAuthCrossHost": false
+    },
+    "headers": {
+      "deny": [
+        "authorization",
+        "cookie",
+        "proxy-authorization"
+      ]
+    },
+    "response": {
+      "maxBytes": 5242880
+    },
+    "options": {
+      "allowSkipSslVerification": false,
+      "allowProxy": false,
+      "maxTimeoutMs": 30000
+    },
+    "audit": {
+      "log": true
+    }
+  },
+  "policies": {
+    "echo-readonly": {
+      "version": 1,
+      "description": "GET and HEAD against httpbin.org, /get and /status only, no bodies",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "hosts": {
+        "allow": [
+          {
+            "host": "httpbin.org",
+            "paths": [
+              "/get",
+              "/status/**",
+              "/redirect-to",
+              "/redirect/**",
+              "/absolute-redirect/**",
+              "/bytes/**",
+              "/image/**",
+              "/headers"
+            ]
+          }
+        ]
+      },
+      "body": {
+        "allowed": false
+      },
+      "response": {
+        "allowBinary": false
+      },
+      "options": {
+        "allowExpressionsInUrl": false,
+        "maxTimeoutMs": 15000
+      }
+    },
+    "echo-write": {
+      "version": 1,
+      "description": "Writes to httpbin.org with JSON bodies up to 64 KiB",
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ],
+      "hosts": {
+        "allow": [
+          "httpbin.org",
+          "postman-echo.com"
+        ]
+      },
+      "body": {
+        "maxBytes": 65536,
+        "contentTypes": [
+          "json",
+          "form-urlencoded",
+          "multipart-form-data"
+        ]
+      },
+      "query": {
+        "deny": [
+          "api_key",
+          "token"
+        ]
+      },
+      "response": {
+        "allowBinary": true
+      },
+      "options": {
+        "allowExpressionsInUrl": true
+      }
+    },
+    "lab-open": {
+      "version": 1,
+      "description": "No host restriction; exercises the floor alone",
+      "options": {
+        "allowExpressionsInUrl": true
+      }
+    }
+  }
+}

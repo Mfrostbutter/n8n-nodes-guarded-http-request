@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "partner-feed-readonly",
+  "description": "GET only against the partner feed, no bodies, no binaries",
+  "methods": ["GET"],
+  "schemes": ["https"],
+  "hosts": { "allow": ["feed.partner.example"] },
+  "paths": { "allow": ["/v1/**"] },
+  "body": { "allowed": false },
+  "response": { "allowBinary": false, "maxBytes": 1048576 },
+  "options": { "allowExpressionsInUrl": false, "maxTimeoutMs": 10000 }
+}

@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "requirePolicy": true,
+  "allowInlinePolicies": true,
+  "requireSignedPolicies": true,
+  "signingKeyFiles": {
+    "2026-10": "/run/secrets/guarded-http-signing-key"
+  },
+  "floor": {
+    "version": 1,
+    "name": "instance-floor",
+    "description": "Applies to every Guarded HTTP Request on this instance. Nothing below can widen it.",
+    "schemes": ["https"],
+    "hosts": {
+      "deny": ["localhost", "127.0.0.0/8", "169.254.0.0/16", "metadata.google.internal"]
+    },
+    "network": {
+      "blockPrivate": true,
+      "blockLoopback": true,
+      "blockLinkLocal": true,
+      "blockMetadata": true,
+      "resolveDns": true
+    },
+    "redirects": { "max": 5, "forwardAuthCrossHost": false },
+    "headers": { "deny": ["authorization", "cookie", "proxy-authorization"] },
+    "auth": { "modes": ["none", "predefinedCredentialType", "genericCredentialType"] },
+    "response": { "maxBytes": 10485760 },
+    "options": {
+      "allowSkipSslVerification": false,
+      "allowProxy": false,
+      "maxTimeoutMs": 60000
+    },
+    "audit": { "log": true }
+  },
+  "policies": {
+    "finance-readonly": {
+      "version": 1,
+      "description": "Read-only access to the ERP and the FX rate feed",
+      "methods": ["GET", "HEAD"],
+      "hosts": {
+        "allow": [
+          { "host": "erp.corp.example", "paths": ["/api/v2/invoices/**", "/api/v2/vendors/**"] },
+          "rates.example.com"
+        ]
+      },
+      "auth": { "required": true, "modes": ["predefinedCredentialType"], "credentialTypes": ["oAuth2Api", "httpHeaderAuth"] },
+      "body": { "allowed": false },
+      "response": { "allowBinary": false },
+      "options": { "allowExpressionsInUrl": false, "allowIgnoreResponseCode": false, "maxTimeoutMs": 15000 }
+    },
+    "ops-write": {
+      "version": 1,
+      "description": "Ticketing writes for the operations project",
+      "methods": ["GET", "POST", "PATCH"],
+      "hosts": { "allow": ["tickets.corp.example"] },
+      "paths": { "deny": ["/api/admin/**"] },
+      "auth": { "required": true },
+      "body": { "maxBytes": 262144, "contentTypes": ["json"] },
+      "query": { "deny": ["api_key", "token"] },
+      "options": { "allowExpressionsInUrl": true }
+    }
+  }
+}

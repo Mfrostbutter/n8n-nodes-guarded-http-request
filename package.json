@@ -1,0 +1,37 @@
+{
+  "name": "n8n-nodes-guarded-http-request",
+  "version": "0.1.0",
+  "description": "HTTP Request node for n8n with admin-controlled, RBAC-scoped request policies",
+  "license": "MIT",
+  "keywords": [
+    "n8n-community-node-package"
+  ],
+  "private": true,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc && node scripts/copy-icons.js",
+    "build:watch": "tsc --watch",
+    "test": "node --test --import tsx tests/*.test.ts"
+  },
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "strict": true,
+    "credentials": [
+      "dist/credentials/GuardedHttpPolicyApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/GuardedHttpRequest/GuardedHttpRequest.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "n8n-workflow": "2.16.0",
+    "tsx": "4.21.0",
+    "typescript": "5.9.3"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  }
+}

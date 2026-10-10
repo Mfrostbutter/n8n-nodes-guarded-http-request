@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "name": "inline-httpbin-get",
+  "description": "Signed inline policy: GET httpbin.org/get only",
+  "methods": ["GET"],
+  "hosts": { "allow": [{ "host": "httpbin.org", "paths": ["/get"] }] }
+}

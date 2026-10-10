@@ -1,0 +1,130 @@
+{
+  "name": "GHR signed policies",
+  "nodes": [
+    {
+      "id": "wh",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "path": "ghr-signed",
+        "responseMode": "lastNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "signed-ok",
+      "name": "Signed ok",
+      "type": "CUSTOM.guardedHttpRequest",
+      "typeVersion": 1,
+      "position": [
+        260,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://httpbin.org/get",
+        "options": {
+          "includePolicyInfo": true
+        }
+      },
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "guardedHttpPolicyApi": {
+          "id": "__POLICY_CREDENTIAL_ID__",
+          "name": "GHR inline signed"
+        }
+      }
+    },
+    {
+      "id": "tampered",
+      "name": "Tampered",
+      "type": "CUSTOM.guardedHttpRequest",
+      "typeVersion": 1,
+      "position": [
+        520,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://httpbin.org/get",
+        "options": {
+          "includePolicyInfo": true
+        }
+      },
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "guardedHttpPolicyApi": {
+          "id": "__POLICY_CREDENTIAL_ID__",
+          "name": "GHR inline tampered"
+        }
+      }
+    },
+    {
+      "id": "unsigned",
+      "name": "Unsigned",
+      "type": "CUSTOM.guardedHttpRequest",
+      "typeVersion": 1,
+      "position": [
+        780,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://httpbin.org/get",
+        "options": {
+          "includePolicyInfo": true
+        }
+      },
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "guardedHttpPolicyApi": {
+          "id": "__POLICY_CREDENTIAL_ID__",
+          "name": "GHR inline unsigned"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Signed ok",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Signed ok": {
+      "main": [
+        [
+          {
+            "node": "Tampered",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tampered": {
+      "main": [
+        [
+          {
+            "node": "Unsigned",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

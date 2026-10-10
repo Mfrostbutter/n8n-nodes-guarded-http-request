@@ -1,0 +1,552 @@
+{
+  "name": "GHR smoke",
+  "nodes": [
+    {
+      "id": "wh",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "path": "ghr-smoke",
+        "responseMode": "lastNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "inspect",
+      "name": "Inspect",
+      "type": "CUSTOM.guardedHttpRequest",
+      "typeVersion": 1,
+      "position": [
+        260,
+        0
+      ],
+      "parameters": {
+        "operation": "inspectPolicy",
+        "policyMode": "credential"
+      },
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "guardedHttpPolicyApi": {
+          "id": "__POLICY_CREDENTIAL_ID__",
+          "name": "GHR policy echo-readonly"
+        }
+      }
+    },
+    {
+      "id": "allowed-get",
+      "name": "Allowed GET",
+      "type": "CUSTOM.guardedHttpRequest",
+      "typeVersion": 1,
+      "position": [
+        520,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://httpbin.org/get",
+        "options": {
+          "includePolicyInfo": true
+        }
+      },
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "guardedHttpPolicyApi": {
+          "id": "__POLICY_CREDENTIAL_ID__",
+          "name": "GHR policy echo-readonly"
+        }
+      }
+    },
+    {
+      "id": "blocked-method",
+      "name": "Blocked method",
+      "type": "CUSTOM.guardedHttpRequest",
+      "typeVersion": 1,
+      "position": [
+        780,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://httpbin.org/get",
+        "options": {
+          "includePolicyInfo": true
+        }
+      },
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "guardedHttpPolicyApi": {
+          "id": "__POLICY_CREDENTIAL_ID__",
+          "name": "GHR policy echo-readonly"
+        }
+      }
+    },
+    {
+      "id": "blocked-host",
+      "name": "Blocked host",
+      "type": "CUSTOM.guardedHttpRequest",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://example.com/",
+        "options": {
+          "includePolicyInfo": true
+        }
+      },
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "guardedHttpPolicyApi": {
+          "id": "__POLICY_CREDENTIAL_ID__",
+          "name": "GHR policy echo-readonly"
+        }
+      }
+    },
+    {
+      "id": "blocked-private",
+      "name": "Blocked private",
+      "type": "CUSTOM.guardedHttpRequest",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://host.docker.internal/",
+        "options": {
+          "includePolicyInfo": true
+        }
+      },
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "guardedHttpPolicyApi": {
+          "id": "__POLICY_CREDENTIAL_ID__",
+          "name": "GHR policy lab-open"
+        }
+      }
+    },
+    {
+      "id": "blocked-scheme",
+      "name": "Blocked scheme",
+      "type": "CUSTOM.guardedHttpRequest",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "http://httpbin.org/get",
+        "options": {
+          "includePolicyInfo": true
+        }
+      },
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "guardedHttpPolicyApi": {
+          "id": "__POLICY_CREDENTIAL_ID__",
+          "name": "GHR policy lab-open"
+        }
+      }
+    },
+    {
+      "id": "redirect-ok",
+      "name": "Redirect ok",
+      "type": "CUSTOM.guardedHttpRequest",
+      "typeVersion": 1,
+      "position": [
+        1820,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://httpbin.org/redirect-to",
+        "sendQuery": true,
+        "specifyQuery": "keypair",
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "https://httpbin.org/get"
+            }
+          ]
+        },
+        "options": {
+          "includePolicyInfo": true
+        }
+      },
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "guardedHttpPolicyApi": {
+          "id": "__POLICY_CREDENTIAL_ID__",
+          "name": "GHR policy echo-readonly"
+        }
+      }
+    },
+    {
+      "id": "redirect-blocked",
+      "name": "Redirect blocked",
+      "type": "CUSTOM.guardedHttpRequest",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://httpbin.org/redirect-to",
+        "sendQuery": true,
+        "specifyQuery": "keypair",
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "https://example.com/"
+            }
+          ]
+        },
+        "options": {
+          "includePolicyInfo": true
+        }
+      },
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "guardedHttpPolicyApi": {
+          "id": "__POLICY_CREDENTIAL_ID__",
+          "name": "GHR policy echo-readonly"
+        }
+      }
+    },
+    {
+      "id": "allowed-post",
+      "name": "Allowed POST",
+      "type": "CUSTOM.guardedHttpRequest",
+      "typeVersion": 1,
+      "position": [
+        2340,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://httpbin.org/post",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "{\"hello\":\"world\",\"n\":1}",
+        "options": {
+          "includePolicyInfo": true
+        }
+      },
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "guardedHttpPolicyApi": {
+          "id": "__POLICY_CREDENTIAL_ID__",
+          "name": "GHR policy echo-write"
+        }
+      }
+    },
+    {
+      "id": "blocked-query",
+      "name": "Blocked query",
+      "type": "CUSTOM.guardedHttpRequest",
+      "typeVersion": 1,
+      "position": [
+        2600,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://httpbin.org/get",
+        "sendQuery": true,
+        "specifyQuery": "keypair",
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "x"
+            }
+          ]
+        },
+        "options": {
+          "includePolicyInfo": true
+        }
+      },
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "guardedHttpPolicyApi": {
+          "id": "__POLICY_CREDENTIAL_ID__",
+          "name": "GHR policy echo-write"
+        }
+      }
+    },
+    {
+      "id": "blocked-header",
+      "name": "Blocked header",
+      "type": "CUSTOM.guardedHttpRequest",
+      "typeVersion": 1,
+      "position": [
+        2860,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://httpbin.org/headers",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer x"
+            }
+          ]
+        },
+        "options": {
+          "includePolicyInfo": true
+        }
+      },
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "guardedHttpPolicyApi": {
+          "id": "__POLICY_CREDENTIAL_ID__",
+          "name": "GHR policy echo-write"
+        }
+      }
+    },
+    {
+      "id": "no-policy",
+      "name": "No policy",
+      "type": "CUSTOM.guardedHttpRequest",
+      "typeVersion": 1,
+      "position": [
+        3120,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://httpbin.org/get",
+        "policyMode": "instanceOnly",
+        "options": {
+          "includePolicyInfo": true
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "binary-blocked",
+      "name": "Binary blocked",
+      "type": "CUSTOM.guardedHttpRequest",
+      "typeVersion": 1,
+      "position": [
+        3380,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://httpbin.org/image/png",
+        "options": {
+          "includePolicyInfo": true
+        }
+      },
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "guardedHttpPolicyApi": {
+          "id": "__POLICY_CREDENTIAL_ID__",
+          "name": "GHR policy echo-readonly"
+        }
+      }
+    },
+    {
+      "id": "binary-ok",
+      "name": "Binary ok",
+      "type": "CUSTOM.guardedHttpRequest",
+      "typeVersion": 1,
+      "position": [
+        3640,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://httpbin.org/image/png",
+        "options": {
+          "includePolicyInfo": true
+        }
+      },
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "guardedHttpPolicyApi": {
+          "id": "__POLICY_CREDENTIAL_ID__",
+          "name": "GHR policy echo-write"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Inspect",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inspect": {
+      "main": [
+        [
+          {
+            "node": "Allowed GET",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Allowed GET": {
+      "main": [
+        [
+          {
+            "node": "Blocked method",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Blocked method": {
+      "main": [
+        [
+          {
+            "node": "Blocked host",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Blocked host": {
+      "main": [
+        [
+          {
+            "node": "Blocked private",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Blocked private": {
+      "main": [
+        [
+          {
+            "node": "Blocked scheme",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Blocked scheme": {
+      "main": [
+        [
+          {
+            "node": "Redirect ok",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redirect ok": {
+      "main": [
+        [
+          {
+            "node": "Redirect blocked",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redirect blocked": {
+      "main": [
+        [
+          {
+            "node": "Allowed POST",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Allowed POST": {
+      "main": [
+        [
+          {
+            "node": "Blocked query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Blocked query": {
+      "main": [
+        [
+          {
+            "node": "Blocked header",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Blocked header": {
+      "main": [
+        [
+          {
+            "node": "No policy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No policy": {
+      "main": [
+        [
+          {
+            "node": "Binary blocked",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Binary blocked": {
+      "main": [
+        [
+          {
+            "node": "Binary ok",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true
+  }
+}
