@@ -5,7 +5,7 @@ Companion to the walkthrough videos. Two cuts share the same footage:
 | Video | Audience | Length |
 |---|---|---|
 | [Admin walkthrough](https://www.loom.com/share/780fd2c8dfc340508a1cfc12d42bee80) | Platform and security teams: how to configure and operate it | 4:11 |
-| [Overview](https://www.loom.com/share/2a7cd1239ebb469e9557c2c8602076f1) | Customer stakeholders and CSMs: what it is and what it gives you | 1:50 |
+| [Overview](LOOM_OVERVIEW_URL) | Customer stakeholders and CSMs: what it is and what it gives you | 1:50 |
 
 Source: this repo. The README has the full policy schema.
 
