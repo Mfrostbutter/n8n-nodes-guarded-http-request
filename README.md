@@ -64,8 +64,10 @@ credential. Consider excluding other egress-capable nodes the review names
 
 ## Install
 
-Verified-program compatible: zero runtime dependencies, one node, one
-credential type, built from `tsc` with no native modules.
+Zero runtime dependencies, one node, one credential type, built from `tsc`
+with no native modules. Not eligible for the verified community node
+program: it is a variant of a core node and reads instance configuration
+from the environment.
 
 Pick a distribution path. In queue mode the node must be present on **main,
 every worker and every webhook process**, same version everywhere.
@@ -78,8 +80,8 @@ every worker and every webhook process**, same version everywhere.
 
 `scripts/stage-lab.sh` produces the staged layout (`.lab-stage/`).
 
-n8n Cloud does not accept private community nodes. This package would need to
-go through the verified-node program first.
+n8n Cloud is not a target. Cloud does not accept private community nodes, and
+this package is not eligible for the verified program.
 
 ## Configure the instance
 

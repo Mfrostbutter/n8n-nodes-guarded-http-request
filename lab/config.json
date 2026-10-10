@@ -40,6 +40,70 @@
     }
   },
   "policies": {
+    "finance-readonly": {
+      "version": 1,
+      "description": "Finance: read-only access to the rates feeds",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "hosts": {
+        "allow": [
+          {
+            "host": "httpbin.org",
+            "paths": [
+              "/get",
+              "/headers"
+            ]
+          },
+          "postman-echo.com"
+        ]
+      },
+      "body": {
+        "allowed": false
+      },
+      "response": {
+        "allowBinary": false
+      },
+      "options": {
+        "allowExpressionsInUrl": false,
+        "maxTimeoutMs": 15000
+      }
+    },
+    "ops-write": {
+      "version": 1,
+      "description": "Operations: ticketing writes with JSON bodies",
+      "methods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "hosts": {
+        "allow": [
+          "httpbin.org"
+        ]
+      },
+      "paths": {
+        "deny": [
+          "/admin/**"
+        ]
+      },
+      "auth": {
+        "required": false
+      },
+      "body": {
+        "maxBytes": 262144,
+        "contentTypes": [
+          "json"
+        ]
+      },
+      "query": {
+        "deny": [
+          "api_key",
+          "token"
+        ]
+      }
+    },
     "echo-readonly": {
       "version": 1,
       "description": "GET and HEAD against httpbin.org, /get and /status only, no bodies",
